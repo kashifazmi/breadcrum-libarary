@@ -42,7 +42,7 @@ export class TraBreadcrumbComponent implements OnInit {
       }
 
       const label = child.snapshot.data[TraBreadcrumbComponent.ROUTE_DATA_BREADCRUMB];
-      if ((label)) {
+      if (label) {
         breadcrumbs.push({ label, url });
       }
       return this.createBreadcrumbs(child, url, breadcrumbs);
