@@ -1,0 +1,165 @@
+<!-- <ng-container> -->
+<app-tra-breadcrumb></app-tra-breadcrumb>
+<div class="container">
+    <div class="card" style="margin-top:2em;">
+        <h5 class="card-header">Add and update the user's role </h5>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>
+                        Please select the Tower to see the available users
+                    <p>
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Available towers
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" (click)="selectTower('Technical Review')">Technical Review</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('TPRM')">TPRM</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('ILG')">ILG</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('Public cloud Engineering')">Public cloud
+                                Engineering</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('Dell Legal Privacy')">Dell Legal Privacy</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('Cyber security')">Cyber security</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" (click)="selectTower('HR Data Governance')">HR Data Governance</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="isAddRoleVisible">
+                    <p>
+                        Add User to specific role, Please click on the Add User button
+                    <p>
+                    <div class="dropdown show">
+                        <a class="btn btn-primary" style="background-color: #0076ce" role="button"
+                            (click)="openAddRoleModal()">
+                            Add User
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" *ngIf="showUserDetails" style="margin-top: 1rem;">
+        <h5 class="card-header">
+            <span>Available users based on the selected towers</span>
+            <hr>
+            <span style="color: cadetblue;">Selected Tower: {{selectedTower}}</span>
+        </h5>
+
+        <div class="card-body">
+            <!-- List of user availble to particluar Tower -->
+            <table class="table table-striped" style="margin-top: 2em;">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th scope="col">Id</th>
+                        <th scope="col">Nt login</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Escalation contact</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-row" style="text-align: center;"
+                        *ngFor="let admin of adminUserList; let i = index">
+                        <th scope="row">{{i+1}}</th>
+                        <td>{{admin.Nt_Id}}</td>
+                        <td>{{admin.FullName}}</td>
+                        <td>{{admin.Role}}</td>
+                        <td>{{admin.IsEscalation}}</td>
+                        <td><a (click)="editUser(admin)">Edit</a></td>
+                        <td><a (click)="openDeleteModal(admin)">Delete</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- </ng-container> -->
+
+
+<!-- modal pop up  -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Warning</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to delete this user as {{selectedDeleteUser?.Role}} </p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" style="background-color: #0076ce"
+                    (click)="deleteUser()">
+                    Yes
+                </button>
+                <button type="button" class="btn btn-danger" (click)="closePopup()">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adding the user role -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': displayStyleAddRoleModal}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{modalText}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" [(ngModel)]="ntlogin" class="form-control" placeholder="search user/nt login"
+                        [disabled]="isEditClick" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="fullName" placeholder="full name"
+                        [disabled]="isEditClick" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <!-- <input type="text" class="form-control" [(ngModel)]="role" placeholder="role"
+                        aria-describedby="basic-addon1"> -->
+                    <select [(ngModel)]="role" class="form-control">
+                        <option value="0" disabled>Select Role</option>
+                        <option value="SuperAdmin">Super Admin</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Requestor">Requestor</option>
+                        <option value="Reviewer">Reviewer</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="col-md-12">Escalation contact</div>
+                    <div class="col-md-12">
+                        <label class="" style="margin: 0.5rem;">
+                            <input type="radio" name="options" id="option1" [(ngModel)]="IsEscalation" value="Yes"> Yes
+                        </label>
+                        <label class="">
+                            <input type="radio" name="options" id="option1" [(ngModel)]="IsEscalation" value="No"> No
+                        </label>
+                    </div>
+                </div>
+                <div class="input-error" *ngIf="inputValidationError">
+                    <span>Please fill all details</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" style="background-color: #0076ce" *ngIf="!isEditClick"
+                    (click)="saveAdminDetails()">Save</button>
+                <button class="btn btn-primary" type="submit" style="background-color: #0076ce" *ngIf="isEditClick"
+                    (click)="updateUserDetails()">Update</button>
+                <button type="button" class="btn btn-danger" (click)="closePopup()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>

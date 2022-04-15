@@ -1,0 +1,31 @@
+<!-- <nav aria-label="breadcrumb">
+    <ol class="dds__breadcrumb">
+        <li class="dds__breadcrumb-item" *ngFor="let item of model">
+            <a [routerLink]="item.url">
+                <span class="dds__sr-only">{{item.label}}</span>
+                <i class="dds__icons dds__home" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ol>
+</nav> -->
+
+<!-- <ul class="breadcrumb" *ngIf="model">
+    <li class="dds__breadcrumb-item" *ngFor="let item of model">
+        <a [routerLink]="item.url">
+            <span class="dds__sr-only">{{item.label}}</span>
+        </a>
+    </li>
+</ul> -->
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb" *ngIf="model">
+        <li class="breadcrumb-item active" aria-current="page" *ngFor="let item of model">
+            <span *ngIf="item.icon" class="{{item.styleClass}}">
+                <i class="bi bi-house"></i>
+            </span>
+            <a [routerLink]="item.url">
+                <span class="dds__sr-only">{{item.label}}</span>
+            </a>
+        </li>
+    </ol>
+</nav>
